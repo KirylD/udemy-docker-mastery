@@ -1,1 +1,34 @@
-# create your drupal and postgres config here, based off the last assignment
+version: "3.7"
+services:
+  postgres:
+    image: postgres:11
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: drupal
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+
+  drupal:    
+    image: custom-drupal
+    build: .    
+    volumes:
+      - drupal-modules:/var/www/html/modules 
+      - drupal-profiles:/var/www/html/profiles
+      - drupal-sites:/var/www/html/sites
+      - drupal-themes:/var/www/html/themes
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
+
+#  100  docker container run -d --rm --name postgres -v postgres:/var/lib/postgresql/data --network docker-compose-assignment-1 -e POSTGRES_DB=drupal -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass postgres:11
+#  101  docker container run -d --rm --name drupal --network docker-compose-assignment-1 -p 8080:80 -v drupal-modules:/var/www/html/modules -v drupal-profiles:/var/www/html/profiles -v drupal-sites:/var/www/html/sites -v drupal-themes:/var/www/html/themes drupal
+
